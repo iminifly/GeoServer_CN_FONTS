@@ -1,6 +1,5 @@
 FROM tomcat:9-jdk11
 
-LABEL maintainer="Oscar Fonts <oscar.fonts@geomati.co>"
 
 ENV GEOSERVER_VERSION 2.17.4
 ENV GEOSERVER_DATA_DIR /var/local/geoserver
@@ -22,14 +21,14 @@ RUN cd  /usr/share/fonts/ && mkfontscale && mkfontdir && fc-cache
 # Uncomment to use APT cache (requires apt-cacher-ng on host)
 #RUN echo "Acquire::http { Proxy \"http://`/sbin/ip route|awk '/default/ { print $3 }'`:3142\"; };" > /etc/apt/apt.conf.d/71-apt-cacher-ng
 
-
+Add ./geoserver-${GEOSERVER_VERSION}-war.zip ${GEOSERVER_INSTALL_DIR}/geoserver-${GEOSERVER_VERSION}-war.zip
 
 # GeoServer
 ADD conf/geoserver.xml /usr/local/tomcat/conf/Catalina/localhost/geoserver.xml
 RUN mkdir ${GEOSERVER_DATA_DIR} \
-    && mkdir ${GEOSERVER_INSTALL_DIR} \
+    # && mkdir ${GEOSERVER_INSTALL_DIR} \
 	&& cd ${GEOSERVER_INSTALL_DIR} \
-	&& wget http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/geoserver-${GEOSERVER_VERSION}-war.zip \
+	# && wget http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/geoserver-${GEOSERVER_VERSION}-war.zip \
 	&& unzip geoserver-${GEOSERVER_VERSION}-war.zip \
 	&& unzip geoserver.war \
     && mv data/* ${GEOSERVER_DATA_DIR} \
